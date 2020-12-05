@@ -13,3 +13,10 @@ What dpt does:
 What dpt doesn't do:
 - Create resources other than permissions and roles 
   - dpt doesn't create tables or users
+
+
+
+How do you manage your permissions? 
+
+Many orgs I've worked for manually manages permissions by hand. Tools like Hashicorp Vault have heavy learning curves. Other organizations model permissions as sql statements and a migration tool using flyway. 
+
