@@ -49,13 +49,75 @@ groups:
 
 ```
 $ python cmd/data-permission-tool.py plan --config=$(pwd)/examples/group.yml --db=postgres
-CREATE GROUP test-group;
-CREATE GROUP test-group-2;
+
+DO
+$do$
+BEGIN
+   IF NOT EXISTS (
+      SELECT FROM pg_catalog.pg_roles  -- SELECT list can be empty for this
+      WHERE rolname = 'test_group') THEN
+
+      CREATE GROUP test_group;
+   END IF;
+END
+$do$;
+
+DO
+$do$
+BEGIN
+   IF NOT EXISTS (
+      SELECT FROM pg_catalog.pg_roles  -- SELECT list can be empty for this
+      WHERE rolname = 'test_group_2') THEN
+
+      CREATE GROUP test_group_2;
+   END IF;
+END
+$do$;
 ```
 
 - Apply the changes
 
 ```
-$ python cmd/data-permission-tool.py plan --config=$(pwd)/examples/group.yml --db=postgres
+$ python cmd/data-permission-tool.py apply --config=$(pwd)/examples/group.yml --db=postgres --connection-string='dbname=test user=test password=test host=localhost'
+
+DO
+$do$
+BEGIN
+   IF NOT EXISTS (
+      SELECT FROM pg_catalog.pg_roles  -- SELECT list can be empty for this
+      WHERE rolname = 'test_group') THEN
+
+      CREATE GROUP test_group;
+   END IF;
+END
+$do$;
+
+DO
+$do$
+BEGIN
+   IF NOT EXISTS (
+      SELECT FROM pg_catalog.pg_roles  -- SELECT list can be empty for this
+      WHERE rolname = 'test_group_2') THEN
+
+      CREATE GROUP test_group_2;
+   END IF;
+END
+$do$;
 ```
 
+- View the roles in postgres
+```
+$ psql -U test -h localhost
+Password for user test:
+psql (12.4, server 13.0 (Debian 13.0-1.pgdg100+1))
+WARNING: psql major version 12, server major version 13.
+         Some psql features might not work.
+Type "help" for help.
+
+test=# select * from pg_roles;
+          rolname          | rolsuper | rolinherit | rolcreaterole | rolcreatedb | rolcanlogin | rolreplication | rolconnlimit | rolpassword | rolvaliduntil | rolbypassrls | rolconfig |  oid
+---------------------------+----------+------------+---------------+-------------+-------------+----------------+--------------+-------------+---------------+--------------+-----------+-------
+...
+test_group_2              | f        | t          | f             | f           | f           | f              |           -1 | ********    |               | f            |           | 16390
+test_group                | f        | t          | f             | f           | f           | f              |           -1 | ********    |               | f            |           | 16385
+```
