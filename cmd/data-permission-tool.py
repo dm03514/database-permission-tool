@@ -42,9 +42,14 @@ def main():
     perms = graph.new(conf)
 
     if cli_args.db == 'postgres':
-        postgres_perms = postgres.Postgres(perms)
+        postgres_perms = postgres.new(
+            perms,
+            cli_args.connection_string,
+        )
         if cli_args.operation == 'plan':
             print('\n'.join(postgres_perms.plan()))
+        elif cli_args.operation == 'apply':
+            postgres_perms.apply()
 
 
 if __name__ == '__main__':
