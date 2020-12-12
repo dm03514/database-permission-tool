@@ -1,0 +1,7 @@
+users:
+  - id: user1
+
+groups:
+  - name: test_group
+    users:
+      - user1

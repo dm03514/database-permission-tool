@@ -26,6 +26,7 @@ class Postgres:
             cursor_factory=psycopg2.extras.DictCursor
         )
         print('\n'.join(plan))
+        # Add parameter bindings
         for statement in plan:
             # group table parameter binding is adding single quotes to the query
             # which is invalid. The group name should either be double quoted
@@ -46,9 +47,19 @@ class Postgres:
         with open(os.path.join(settings.POSTGRES_SQL_DIR, 'create_group.sql')) as f:
             group_template = f.read()
 
+        with open(os.path.join(settings.POSTGRES_SQL_DIR, 'add_user_to_group.sql')) as f:
+            add_user_to_group_template = f.read()
+
         for group in self.perms.groups():
             sql_statements.append(
                 group_template.format(group.name, group.name)
             )
+            for user_id in self.perms.users_of_group(group):
+                sql_statements.append(
+                    add_user_to_group_template.format(
+                        group.name,
+                        user_id,
+                    )
+                )
 
         return sql_statements

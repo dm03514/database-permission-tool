@@ -121,3 +121,85 @@ test=# select * from pg_roles;
 test_group_2              | f        | t          | f             | f           | f           | f              |           -1 | ********    |               | f            |           | 16390
 test_group                | f        | t          | f             | f           | f           | f              |           -1 | ********    |               | f            |           | 16385
 ```
+
+# Workflow: Add Users To a Group
+
+Users are not managed as part of permission tool. This means that users must be created outside of
+the permission tool flow. 
+
+- Create a user:
+
+```
+test=# CREATE USER user1;
+CREATE ROLE
+```
+
+- Plan
+
+```
+$ python cmd/data-permission-tool.py plan --config=$(pwd)/examples/add_users_to_group.yml --db=postgres
+DO
+$do$
+BEGIN
+   IF NOT EXISTS (
+      SELECT FROM pg_catalog.pg_roles  -- SELECT list can be empty for this
+      WHERE rolname = 'test_group') THEN
+
+      CREATE GROUP test_group;
+   END IF;
+END
+$do$;
+
+ALTER GROUP test_group ADD USER user1;
+```
+
+- Apply
+
+```
+$ python cmd/data-permission-tool.py apply --config=$(pwd)/examples/add_users_to_group.yml --db=postgres --connection-string='dbname=test user=test password=test host=localhost'
+DO
+$do$
+BEGIN
+   IF NOT EXISTS (
+      SELECT FROM pg_catalog.pg_roles  -- SELECT list can be empty for this
+      WHERE rolname = 'test_group') THEN
+
+      CREATE GROUP test_group;
+   END IF;
+END
+$do$;
+
+ALTER GROUP test_group ADD USER user1;
+```
+
+- Verify that the user was added to the group
+
+```
+$ psql -U test -h localhost
+Password for user test:
+psql (12.4, server 13.0 (Debian 13.0-1.pgdg100+1))
+WARNING: psql major version 12, server major version 13.
+         Some psql features might not work.
+Type "help" for help.
+
+test=# select rolname from pg_user
+test-# join pg_auth_members on (pg_user.usesysid=pg_auth_members.member)
+test-# join pg_roles on (pg_roles.oid=pg_auth_members.roleid)
+test-# where
+test-# pg_user.usename='user1';
+  rolname
+------------
+ test_group
+(1 row)
+```
+
+# Test User Group Membership
+
+# Workflow: Adding Permission to a Schema
+
+# Workflow: Adding a New Table
+
+# Test Table Access Permissions
+
+
+
