@@ -41,8 +41,8 @@ $ docker-compose up -d
 # group.yml
 
 groups:
-  - name: test-group
-  - name: test-group-2
+  - id: test-group
+  - id: test-group-2
 ```
 
 - Plan the changes
