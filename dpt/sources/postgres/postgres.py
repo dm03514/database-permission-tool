@@ -52,12 +52,12 @@ class Postgres:
 
         for group in self.perms.groups():
             sql_statements.append(
-                group_template.format(group.name, group.name)
+                group_template.format(group.id(), group.id())
             )
             for user_id in self.perms.users_of_group(group):
                 sql_statements.append(
                     add_user_to_group_template.format(
-                        group.name,
+                        group.id(),
                         user_id,
                     )
                 )

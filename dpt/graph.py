@@ -38,7 +38,7 @@ def new(conf):
         Graph.add_node(u, **u.attrs())
 
     for group in conf.get('groups', []):
-        g = Group(name=group['name'])
+        g = Group(_id=group['id'])
         Graph.add_node(g, **g.attrs())
 
         for user_id in group.get('users', []):
@@ -63,11 +63,14 @@ class User:
 
 
 class Group:
-    def __init__(self, name):
-        self.id = id
+    def __init__(self, _id):
+        self._id = _id
+
+    def id(self):
+        return self._id
 
     def attrs(self):
         return {
-            'id': self.id,
+            'id': self._id,
             'type': 'GROUP'
         }

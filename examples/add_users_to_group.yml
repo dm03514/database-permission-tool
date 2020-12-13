@@ -2,6 +2,6 @@ users:
   - id: user1
 
 groups:
-  - name: test_group
+  - id: test_group
     users:
       - user1
