@@ -6,6 +6,7 @@ import networkx as nx
 from dpt.sources import postgres
 from dpt import graph
 
+
 def main():
     parser = argparse.ArgumentParser(
         description='Manage database permissions'
@@ -13,7 +14,7 @@ def main():
     parser.add_argument(
         'operation',
         type=str,
-        choices=('apply', 'plan'),
+        choices=('apply', 'plan', 'graph'),
         help='dpt operation to perform')
     parser.add_argument(
         '--db',
@@ -40,6 +41,13 @@ def main():
 
     # parse the config file into a dpt graph
     perms = graph.new(conf)
+
+    if cli_args.operation == 'graph':
+        pdot = nx.drawing.nx_pydot.to_pydot(perms.graph)
+        name = 'build/{}.png'.format('out')
+        print('saving graph: "{}"'.format(name))
+        pdot.write_png(name)
+        return
 
     if cli_args.db == 'postgres':
         postgres_perms = postgres.new(

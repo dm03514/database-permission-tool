@@ -64,10 +64,10 @@ class User:
 
 class Group:
     def __init__(self, name):
-        self.name = name
+        self.id = id
 
     def attrs(self):
         return {
-            'name': self.name,
+            'id': self.id,
             'type': 'GROUP'
         }
