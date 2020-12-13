@@ -33,16 +33,19 @@ def new(conf):
     """
     Graph = nx.Graph()
 
+    users = {}
+
     for user in conf.get('users', []):
         u = User(_id=user['id'])
         Graph.add_node(u, **u.attrs())
+        users[u.id()] = u
 
     for group in conf.get('groups', []):
         g = Group(_id=group['id'])
         Graph.add_node(g, **g.attrs())
 
         for user_id in group.get('users', []):
-            u = User(_id=user_id)
+            u = users[user_id]
             Graph.add_edge(u, g, **u.attrs())
 
     return Permissions(graph=Graph)
