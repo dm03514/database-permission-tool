@@ -7,15 +7,15 @@ class Permissions:
 
     # TODO - figure efficient lookups up after the POC
 
-    def groups(self):
+    def roles(self):
         return [n for n, attrs in self.graph.nodes(data=True)
-                if attrs.get('type') == 'GROUP']
+                if attrs.get('type') == 'ROLE']
 
     def users(self):
         return [n for n, attrs in self.graph.nodes(data=True)
                 if attrs.get('type') == 'USER']
 
-    def users_of_group(self, group):
+    def users_of_role(self, group):
         edges = self.graph.edges(group, data=True)
         users = []
         for _, user, attrs in edges:
@@ -40,13 +40,13 @@ def new(conf):
         Graph.add_node(u, **u.attrs())
         users[u.id()] = u
 
-    for group in conf.get('groups', []):
-        g = Group(_id=group['id'])
-        Graph.add_node(g, **g.attrs())
+    for role in conf.get('roles', []):
+        rl = Role(_id=role['id'])
+        Graph.add_node(rl, **rl.attrs())
 
-        for user_id in group.get('users', []):
+        for user_id in role.get('users', []):
             u = users[user_id]
-            Graph.add_edge(u, g, **u.attrs())
+            Graph.add_edge(u, rl, **u.attrs())
 
     return Permissions(graph=Graph)
 
@@ -65,7 +65,7 @@ class User:
         }
 
 
-class Group:
+class Role:
     def __init__(self, _id):
         self._id = _id
 
@@ -75,5 +75,5 @@ class Group:
     def attrs(self):
         return {
             'id': self._id,
-            'type': 'GROUP'
+            'type': 'ROLE'
         }

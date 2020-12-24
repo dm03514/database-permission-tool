@@ -44,20 +44,20 @@ class Postgres:
         """
         # build all the groups statements
         sql_statements = []
-        with open(os.path.join(settings.POSTGRES_SQL_DIR, 'create_group.sql')) as f:
+        with open(os.path.join(settings.POSTGRES_SQL_DIR, 'create_role.sql')) as f:
             group_template = f.read()
 
         with open(os.path.join(settings.POSTGRES_SQL_DIR, 'add_user_to_group.sql')) as f:
             add_user_to_group_template = f.read()
 
-        for group in self.perms.groups():
+        for role in self.perms.roles():
             sql_statements.append(
-                group_template.format(group.id(), group.id())
+                group_template.format(role.id(), role.id())
             )
-            for user_id in self.perms.users_of_group(group):
+            for user_id in self.perms.users_of_role(role):
                 sql_statements.append(
                     add_user_to_group_template.format(
-                        group.id(),
+                        role.id(),
                         user_id,
                     )
                 )

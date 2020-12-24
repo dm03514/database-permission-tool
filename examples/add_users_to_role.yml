@@ -1,7 +1,7 @@
 users:
   - id: user1
 
-groups:
+roles:
   - id: test_group
     users:
       - user1

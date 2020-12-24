@@ -38,9 +38,9 @@ $ docker-compose up -d
 - Define a configuration file
 
 ```
-# group.yml
+# role.yml
 
-groups:
+roles:
   - id: test-group
   - id: test-group-2
 ```
@@ -48,7 +48,7 @@ groups:
 - Plan the changes
 
 ```
-$ python cmd/data-permission-tool.py plan --config=$(pwd)/examples/group.yml --db=postgres
+$ python cmd/data-permission-tool.py plan --config=$(pwd)/examples/role.yml --db=postgres
 
 DO
 $do$
@@ -78,7 +78,7 @@ $do$;
 - Apply the changes
 
 ```
-$ python cmd/data-permission-tool.py apply --config=$(pwd)/examples/group.yml --db=postgres --connection-string='dbname=test user=test password=test host=localhost'
+$ python cmd/data-permission-tool.py apply --config=$(pwd)/examples/role.yml --db=postgres --connection-string='dbname=test user=test password=test host=localhost'
 
 DO
 $do$
@@ -134,10 +134,24 @@ test=# CREATE USER user1;
 CREATE ROLE
 ```
 
+- Define configuration file
+
+```
+# add_users_to_role.yml
+
+users:
+  - id: user1
+
+roles:
+  - id: test_group
+    users:
+      - user1
+```
+
 - Plan
 
 ```
-$ python cmd/data-permission-tool.py plan --config=$(pwd)/examples/add_users_to_group.yml --db=postgres
+$ python cmd/data-permission-tool.py plan --config=$(pwd)/examples/add_users_to_role.yml --db=postgres
 DO
 $do$
 BEGIN
@@ -156,7 +170,7 @@ ALTER GROUP test_group ADD USER user1;
 - Apply
 
 ```
-$ python cmd/data-permission-tool.py apply --config=$(pwd)/examples/add_users_to_group.yml --db=postgres --connection-string='dbname=test user=test password=test host=localhost'
+$ python cmd/data-permission-tool.py apply --config=$(pwd)/examples/add_users_to_role.yml --db=postgres --connection-string='dbname=test user=test password=test host=localhost'
 DO
 $do$
 BEGIN
@@ -193,7 +207,7 @@ test-# pg_user.usename='user1';
 (1 row)
 ```
 
-# Test User Group Membership
+# Test User Role Membership
 
 # Workflow: Adding Permission to a Schema
 

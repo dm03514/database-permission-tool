@@ -12,7 +12,7 @@ class GraphTestCase(unittest.TestCase):
                     'id': 'user_id_1'
                 }
             ],
-            'groups': [
+            'roles': [
                 {
                     'id': 'new_group',
                     'users': [
@@ -26,5 +26,5 @@ class GraphTestCase(unittest.TestCase):
         attrs = [attr for n, attr in nodes]
         self.assertEqual([
             {'id': 'user_id_1', 'type': 'USER'},
-            {'id': 'new_group', 'type': 'GROUP'}
+            {'id': 'new_group', 'type': 'ROLE'}
         ], attrs)
