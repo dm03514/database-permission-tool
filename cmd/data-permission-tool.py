@@ -1,10 +1,17 @@
 import argparse
+import logging
 
 import yaml
 import networkx as nx
 
 from dpt.sources import postgres
 from dpt import graph
+
+from dpt.logger import init
+
+init()
+
+logger = logging.getLogger(__name__)
 
 
 def main():
@@ -55,7 +62,7 @@ def main():
             cli_args.connection_string,
         )
         if cli_args.operation == 'plan':
-            print('\n'.join(postgres_perms.plan()))
+            print('\n'.join(stmnt.sql for stmnt in postgres_perms.plan()))
         elif cli_args.operation == 'apply':
             postgres_perms.apply()
 

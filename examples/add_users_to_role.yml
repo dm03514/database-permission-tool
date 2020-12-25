@@ -3,5 +3,6 @@ users:
 
 roles:
   - id: test_group
-    users:
-      - user1
+    members:
+      - id: user1
+        type: USER

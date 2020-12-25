@@ -1,11 +1,16 @@
+import logging
 import os
 
 import psycopg2
 import psycopg2.extras
 
 from dpt import settings
+from dpt.statement import Statement
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
+
+
+logger = logging.getLogger(__name__)
 
 
 def new(perms, connection_string=None):
@@ -25,14 +30,18 @@ class Postgres:
         cursor = self.conn.cursor(
             cursor_factory=psycopg2.extras.DictCursor
         )
-        print('\n'.join(plan))
+        # print('\n'.join(plan))
         # Add parameter bindings
         for statement in plan:
             # group table parameter binding is adding single quotes to the query
             # which is invalid. The group name should either be double quoted
             # or no quotes :(
-            cursor.execute(statement)
-
+            logger.info('Provisioning resource {}({})'.format(
+                statement.resource.type(),
+                statement.resource.id(),
+            ))
+            logger.debug(statement.sql)
+            cursor.execute(statement.sql)
         self.conn.commit()
         cursor.close()
 
@@ -52,13 +61,22 @@ class Postgres:
 
         for role in self.perms.roles():
             sql_statements.append(
-                group_template.format(role.id(), role.id())
-            )
-            for user_id in self.perms.users_of_role(role):
-                sql_statements.append(
-                    add_user_to_group_template.format(
+                Statement(
+                    resource=role,
+                    sql=group_template.format(
                         role.id(),
-                        user_id,
+                        role.id()
+                    )
+                )
+            )
+            for user in self.perms.users_of_role(role):
+                sql_statements.append(
+                    Statement(
+                        resource=user,
+                        sql=add_user_to_group_template.format(
+                            role.id(),
+                            user.id(),
+                        )
                     )
                 )
 
