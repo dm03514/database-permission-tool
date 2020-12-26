@@ -1,5 +1,9 @@
+import os
 import unittest
 
+import yaml
+
+from dpt import settings
 from dpt.graph import new
 
 
@@ -30,4 +34,13 @@ class GraphTestCase(unittest.TestCase):
         self.assertEqual([
             {'id': 'user_id_1', 'type': 'USER'},
             {'id': 'new_group', 'type': 'ROLE'}
+        ], attrs)
+
+    def test_new_graph_policies(self):
+        f = open(os.path.join(settings.EXAMPLES_DIR, 'role_permissions.yml'))
+        conf = yaml.safe_load(f)
+        perms = new(conf)
+        nodes = perms.graph.nodes(data=True)
+        attrs = [attr for n, attr in nodes]
+        self.assertEqual([
         ], attrs)

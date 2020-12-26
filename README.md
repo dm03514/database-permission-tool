@@ -80,29 +80,8 @@ $do$;
 ```
 $ python cmd/data-permission-tool.py apply --config=$(pwd)/examples/role.yml --db=postgres --connection-string='dbname=test user=test password=test host=localhost'
 
-DO
-$do$
-BEGIN
-   IF NOT EXISTS (
-      SELECT FROM pg_catalog.pg_roles  -- SELECT list can be empty for this
-      WHERE rolname = 'test_group') THEN
-
-      CREATE GROUP test_group;
-   END IF;
-END
-$do$;
-
-DO
-$do$
-BEGIN
-   IF NOT EXISTS (
-      SELECT FROM pg_catalog.pg_roles  -- SELECT list can be empty for this
-      WHERE rolname = 'test_group_2') THEN
-
-      CREATE GROUP test_group_2;
-   END IF;
-END
-$do$;
+2020-12-25 14:33:18,196 - dpt.sources.postgres.postgres - INFO - Provisioning resource ROLE(test_group)
+2020-12-25 14:33:18,199 - dpt.sources.postgres.postgres - INFO - Provisioning resource ROLE(test_group_2)
 ```
 
 - View the roles in postgres
@@ -171,19 +150,9 @@ ALTER GROUP test_group ADD USER user1;
 
 ```
 $ python cmd/data-permission-tool.py apply --config=$(pwd)/examples/add_users_to_role.yml --db=postgres --connection-string='dbname=test user=test password=test host=localhost'
-DO
-$do$
-BEGIN
-   IF NOT EXISTS (
-      SELECT FROM pg_catalog.pg_roles  -- SELECT list can be empty for this
-      WHERE rolname = 'test_group') THEN
 
-      CREATE GROUP test_group;
-   END IF;
-END
-$do$;
-
-ALTER GROUP test_group ADD USER user1;
+2020-12-25 14:33:47,861 - dpt.sources.postgres.postgres - INFO - Provisioning resource ROLE(test_group)
+2020-12-25 14:33:47,864 - dpt.sources.postgres.postgres - INFO - Provisioning resource USER(user1)
 ```
 
 - Verify that the user was added to the group

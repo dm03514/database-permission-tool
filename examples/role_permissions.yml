@@ -1,0 +1,38 @@
+users:
+  - id: user_admin
+  - id: user_reg
+
+schemas:
+  - id: test
+
+roles:
+  - id: admin
+    members:
+      - id: user_admin
+        type: USER
+
+  - id: readonly
+    members:
+      - id: user_reg
+        type: USER
+
+policies:
+  - id: admin
+    subject:
+      id: admin
+      type: ROLE
+    target:
+      id: test
+      type: SCHEMA
+    permissions:
+      - ALL
+
+  - id: readonly
+    subject:
+      id: readonly
+      type: ROLE
+    target:
+      id: test
+      type: SCHEMA
+    permissions:
+      - SELECT
