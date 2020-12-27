@@ -2,10 +2,10 @@ DO
 $do$
 BEGIN
    IF NOT EXISTS (
-      SELECT FROM pg_catalog.pg_roles  -- SELECT list can be empty for this
-      WHERE rolname = '{}') THEN
+      SELECT FROM pg_catalog.pg_roles
+      WHERE rolname = '{{ role_id }}') THEN
 
-      CREATE GROUP {};
+      CREATE GROUP {{ role_id }};
    END IF;
 END
 $do$;

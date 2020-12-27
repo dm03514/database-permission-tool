@@ -3,7 +3,7 @@ users:
   - id: user_reg
 
 schemas:
-  - id: test
+  - id: public
 
 roles:
   - id: admin
@@ -22,7 +22,7 @@ policies:
       id: admin
       type: ROLE
     target:
-      id: test
+      id: public
       type: SCHEMA
     permissions:
       - ALL
@@ -32,7 +32,7 @@ policies:
       id: readonly
       type: ROLE
     target:
-      id: test
+      id: public
       type: SCHEMA
     permissions:
       - SELECT

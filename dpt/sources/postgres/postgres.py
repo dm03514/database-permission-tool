@@ -3,6 +3,7 @@ import os
 
 import psycopg2
 import psycopg2.extras
+from jinja2 import Template
 
 from dpt import settings
 from dpt.statement import Statement
@@ -53,31 +54,50 @@ class Postgres:
         """
         # build all the groups statements
         sql_statements = []
+        # TODO add a jinja template loader
         with open(os.path.join(settings.POSTGRES_SQL_DIR, 'create_role.sql')) as f:
-            group_template = f.read()
+            role_template = f.read()
 
-        with open(os.path.join(settings.POSTGRES_SQL_DIR, 'add_user_to_group.sql')) as f:
-            add_user_to_group_template = f.read()
+        with open(os.path.join(settings.POSTGRES_SQL_DIR, 'add_user_to_role.sql')) as f:
+            add_user_to_role_template = f.read()
+
+        with open(os.path.join(settings.POSTGRES_SQL_DIR, 'grant.sql')) as f:
+            grant_template = f.read()
 
         for role in self.perms.roles():
+            t = Template(role_template)
             sql_statements.append(
                 Statement(
                     resource=role,
-                    sql=group_template.format(
-                        role.id(),
-                        role.id()
+                    sql=t.render(
+                        role_id=role.id(),
                     )
                 )
             )
+
             for user in self.perms.users_of_role(role):
+                t = Template(add_user_to_role_template)
                 sql_statements.append(
                     Statement(
                         resource=user,
-                        sql=add_user_to_group_template.format(
-                            role.id(),
-                            user.id(),
+                        sql=t.render(
+                            role_id=role.id(),
+                            user_id=user.id(),
                         )
                     )
                 )
+
+        for policy in self.perms.policies():
+            t = Template(grant_template)
+            sql_statements.append(
+                Statement(
+                    resource=policy,
+                    sql=t.render(
+                        permission=policy.permissions[0],
+                        target=policy.target,
+                        subject=policy.subject
+                    )
+                )
+            )
 
         return sql_statements

@@ -62,7 +62,7 @@ def main():
             cli_args.connection_string,
         )
         if cli_args.operation == 'plan':
-            print('\n'.join(stmnt.sql for stmnt in postgres_perms.plan()))
+            print('\n\n'.join(stmnt.sql for stmnt in postgres_perms.plan()))
         elif cli_args.operation == 'apply':
             postgres_perms.apply()
 

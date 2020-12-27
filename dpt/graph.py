@@ -39,6 +39,10 @@ class Permissions:
         return [n for n, attrs in self.graph.nodes(data=True)
                 if attrs.get('type') == TYPE.USER]
 
+    def policies(self):
+        return [n for n, attrs in self.graph.nodes(data=True)
+                if attrs.get('type') == TYPE.POLICY]
+
     def users_of_role(self, role):
         edges = self.graph.edges(role, data=True)
         users = []
@@ -91,31 +95,34 @@ def new(conf):
                 Graph.add_edge(u, rl, **u.attrs())
             else:
                 raise NotImplementedError
+    for pc in conf.get('policies', []):
+        subject = pc['subject']
+        target = pc['target']
+        permissions = pc['permissions']
 
-    for policy in conf.get('policies', []):
-        p = Policy(
-            _id=policy['id'],
-            subject=policy['subject'],
-            target=policy['target'],
-            permissions=policy['permissions'],
+        policy = Policy(
+            _id=pc['id'],
+            subject=pc['subject'],
+            target=pc['target'],
+            permissions=pc['permissions'],
         )
 
-        Graph.add_node(p, **p.attrs())
+        Graph.add_node(policy, **policy.attrs())
 
-        if policy['subject']['type'] == TYPE.ROLE:
-            rl = roles[policy['subject']['id']]
-            Graph.add_edge(p, rl, type=TYPE.SUBJECT)
+        if subject['type'] == TYPE.ROLE:
+            rl = roles[subject['id']]
+            Graph.add_edge(policy, rl, **{'type': TYPE.SUBJECT})
         else:
             raise NotImplementedError
 
-        if policy['target']['type'] == TYPE.SCHEMA:
-            schema = schemas[policy['target']['id']]
-            Graph.add_edge(p, schema, type=TYPE.TARGET)
+        if target['type'] == TYPE.SCHEMA:
+            schema = schemas[target['id']]
+            Graph.add_edge(policy, schema, **{'type': TYPE.TARGET})
         else:
             raise NotImplementedError
 
-        for perm in policy['permissions']:
-            Graph.add_edge(p, perm, type=TYPE.PERMISSION)
+        for perm in permissions:
+            Graph.add_edge(policy, perm, **{'type': TYPE.PERMISSION})
 
     return Permissions(graph=Graph)
 
@@ -148,6 +155,12 @@ class Resource(R):
             'type': self.type()
         }
 
+    def __repr__(self):
+        return 'Resource(_id="{}", _type="{}")'.format(
+            self.id(),
+            self.type(),
+        )
+
 
 class Policy(R):
     def __init__(self, _id, subject, target, permissions, _type=TYPE.POLICY):
@@ -171,3 +184,9 @@ class Policy(R):
             'target': self.target,
             'permissions': self.permissions,
         }
+
+    def __repr__(self):
+        return 'Policy(_id="{}", _type="{}")'.format(
+            self.id(),
+            self.type(),
+        )
