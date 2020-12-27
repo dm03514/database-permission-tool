@@ -7,7 +7,6 @@ certifi==2020.11.8
 cffi==1.14.4
 chardet==3.0.4
 cryptography==3.2.1
--e git+git@github.com:dm03514/database-permission-tool.git@230d52c27e2876843cbe08e5365db4ac1abb9cf9#egg=data_permission_tool
 decorator==4.4.2
 distro==1.5.0
 docker==4.4.0
