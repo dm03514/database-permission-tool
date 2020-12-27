@@ -1,1 +1,0 @@
-ALTER GROUP {} ADD USER {};

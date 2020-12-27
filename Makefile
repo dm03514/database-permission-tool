@@ -1,2 +1,2 @@
 test-unit:
-	nosetests tests
+	nosetests tests -s

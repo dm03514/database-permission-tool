@@ -22,7 +22,7 @@ Many orgs I've worked for manually manages permissions by hand. Tools like Hashi
 
 Datbase Permission Tool makes permissions and roles a first class citizen. It provides the same benefits for roles and permissions that terraform provides for infrstatructure.
 
-# Examples
+## Examples
 
 
 ## Creating Groups
@@ -80,29 +80,8 @@ $do$;
 ```
 $ python cmd/data-permission-tool.py apply --config=$(pwd)/examples/role.yml --db=postgres --connection-string='dbname=test user=test password=test host=localhost'
 
-DO
-$do$
-BEGIN
-   IF NOT EXISTS (
-      SELECT FROM pg_catalog.pg_roles  -- SELECT list can be empty for this
-      WHERE rolname = 'test_group') THEN
-
-      CREATE GROUP test_group;
-   END IF;
-END
-$do$;
-
-DO
-$do$
-BEGIN
-   IF NOT EXISTS (
-      SELECT FROM pg_catalog.pg_roles  -- SELECT list can be empty for this
-      WHERE rolname = 'test_group_2') THEN
-
-      CREATE GROUP test_group_2;
-   END IF;
-END
-$do$;
+2020-12-25 14:33:18,196 - dpt.sources.postgres.postgres - INFO - Provisioning resource ROLE(test_group)
+2020-12-25 14:33:18,199 - dpt.sources.postgres.postgres - INFO - Provisioning resource ROLE(test_group_2)
 ```
 
 - View the roles in postgres
@@ -122,7 +101,7 @@ test_group_2              | f        | t          | f             | f           
 test_group                | f        | t          | f             | f           | f           | f              |           -1 | ********    |               | f            |           | 16385
 ```
 
-# Workflow: Add Users To a Group
+## Workflow: Add Users To a Group
 
 Users are not managed as part of permission tool. This means that users must be created outside of
 the permission tool flow. 
@@ -171,19 +150,9 @@ ALTER GROUP test_group ADD USER user1;
 
 ```
 $ python cmd/data-permission-tool.py apply --config=$(pwd)/examples/add_users_to_role.yml --db=postgres --connection-string='dbname=test user=test password=test host=localhost'
-DO
-$do$
-BEGIN
-   IF NOT EXISTS (
-      SELECT FROM pg_catalog.pg_roles  -- SELECT list can be empty for this
-      WHERE rolname = 'test_group') THEN
 
-      CREATE GROUP test_group;
-   END IF;
-END
-$do$;
-
-ALTER GROUP test_group ADD USER user1;
+2020-12-25 14:33:47,861 - dpt.sources.postgres.postgres - INFO - Provisioning resource ROLE(test_group)
+2020-12-25 14:33:47,864 - dpt.sources.postgres.postgres - INFO - Provisioning resource USER(user1)
 ```
 
 - Verify that the user was added to the group
@@ -207,13 +176,42 @@ test-# pg_user.usename='user1';
 (1 row)
 ```
 
-# Test User Role Membership
 
-# Workflow: Adding Permission to a Schema
+## Workflow: Adding Permission to a Schema
 
-# Workflow: Adding a New Table
+```
+$ python cmd/data-permission-tool.py apply --config=$(pwd)/examples/role_permissions.yml --db=postgres --connection-string='dbname=test user=test password=test host=localhost'
+2020-12-26 19:54:43,854 - dpt.sources.postgres.postgres - INFO - Provisioning resource ROLE(admin)
+2020-12-26 19:54:43,858 - dpt.sources.postgres.postgres - INFO - Provisioning resource USER(user_admin)
+2020-12-26 19:54:43,859 - dpt.sources.postgres.postgres - INFO - Provisioning resource ROLE(readonly)
+2020-12-26 19:54:43,861 - dpt.sources.postgres.postgres - INFO - Provisioning resource USER(user_reg)
+2020-12-26 19:54:43,862 - dpt.sources.postgres.postgres - INFO - Provisioning resource POLICY(admin)
+2020-12-26 19:54:43,863 - dpt.sources.postgres.postgres - INFO - Provisioning resource POLICY(readonly)
 
-# Test Table Access Permissions
+$ psql -U test -h localhost
+Password for user test:
+psql (12.4, server 13.0 (Debian 13.0-1.pgdg100+1))
+WARNING: psql major version 12, server major version 13.
+         Some psql features might not work.
+Type "help" for help.
+
+test=# \du
+                                      List of roles
+  Role name   |                         Attributes                         |  Member of
+--------------+------------------------------------------------------------+--------------
+ admin        | Cannot login                                               | {}
+ readonly     | Cannot login                                               | {}
+ test         | Superuser, Create role, Create DB, Replication, Bypass RLS | {}
+ test_group   | Cannot login                                               | {}
+ test_group_2 | Cannot login                                               | {}
+ user1        |                                                            | {test_group}
+ user_admin   |                                                            | {admin}
+ user_reg     |                                                            | {readonly}
+```
+
+## Test User Role Membership
+## Workflow: Adding a New Table
+## Test Table Access Permissions
 
 
 

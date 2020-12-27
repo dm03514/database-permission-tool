@@ -1,0 +1,1 @@
+ALTER GROUP {{ role_id }} ADD USER {{ user_id }};
