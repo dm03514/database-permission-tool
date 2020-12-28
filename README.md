@@ -7,7 +7,7 @@ Database permission tool (dpt) allows you to store your database roles permissio
 - Clone the repo:
 
 ```
-$ git@github.com:dm03514/database-permission-tool.git
+$ git clone git@github.com:dm03514/database-permission-tool.git && cd database-permission-tool
 ```
 
 - Install python requirements:
