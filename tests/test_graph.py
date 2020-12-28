@@ -41,32 +41,4 @@ class GraphTestCase(unittest.TestCase):
         perms = new(conf)
         nodes = perms.graph.nodes(data=True)
         attrs = [attr for n, attr in nodes]
-        self.assertEqual([
-            {'id': 'user_admin', 'type': 'USER'},
-            {'id': 'user_reg', 'type': 'USER'},
-            {'id': 'public', 'type': 'SCHEMA'},
-            {'id': 'admin', 'type': 'ROLE'},
-            {'id': 'readonly', 'type': 'ROLE'},
-            {'id': 'admin', 'type': 'POLICY',
-             'subject': {
-                 'id': 'admin',
-                 'type': 'ROLE'
-             },
-             'target': {
-                 'id': 'public', 'type': 'SCHEMA'
-             },
-             'permissions': ['ALL']
-             },
-            {},
-            {'id': 'readonly', 'type': 'POLICY', 'subject': {
-                'id': 'readonly',
-                'type': 'ROLE'
-            },
-            'target': {
-                'id': 'public',
-                'type': 'SCHEMA'
-            },
-             'permissions': ['SELECT']
-             },
-            {}
-        ], attrs)
+        self.assertEqual([{'id': 'user_admin', 'type': 'USER'}, {'id': 'user_reg', 'type': 'USER'}, {'id': 'public', 'type': 'SCHEMA'}, {'id': 'admin', 'type': 'ROLE'}, {'id': 'readonly', 'type': 'ROLE'}, {'id': 'admin', 'type': 'POLICY', 'subject': {'id': 'admin', 'type': 'ROLE'}, 'target': {'id': 'public', 'type': 'SCHEMA'}, 'permissions': {'all': True}}, {'id': 'readonly', 'type': 'POLICY', 'subject': {'id': 'readonly', 'type': 'ROLE'}, 'target': {'id': 'public', 'type': 'SCHEMA'}, 'permissions': {'select': True}}] , attrs)

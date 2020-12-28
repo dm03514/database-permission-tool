@@ -9,7 +9,7 @@ from dpt import graph
 
 from dpt.logger import init
 
-init()
+init(level='DEBUG')
 
 logger = logging.getLogger(__name__)
 

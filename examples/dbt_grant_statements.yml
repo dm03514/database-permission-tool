@@ -1,0 +1,23 @@
+description: |
+  https://discourse.getdbt.com/t/the-exact-grant-statements-we-use-in-a-dbt-project/430
+  Grant statements that dbt uses for their projects.
+
+schemas:
+  - id: analytics
+
+roles:
+  - id: reporter
+
+policies:
+  - id: reporter
+    subject:
+      id: reporter
+      type: ROLE
+    target:
+      id: analytics
+      type: SCHEMA
+    permissions:
+      usage: True
+      select: True
+      default_privileges:
+        select: True

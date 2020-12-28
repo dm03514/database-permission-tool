@@ -96,12 +96,6 @@ BEGIN
 END
 $do$;''',
             'ALTER GROUP readonly ADD USER user_reg;',
-            '''GRANT ALL
-ON
-  ALL SEQUENCES IN SCHEMA public 
-TO admin''',
-            '''GRANT SELECT
-ON
-  ALL SEQUENCES IN SCHEMA public 
-TO readonly'''
+            '\nGRANT ALL ON SCHEMA public TO admin;\n\n',
+            'GRANT SELECT ON ALL TABLES IN SCHEMA public TO readonly;'
         ], sql)

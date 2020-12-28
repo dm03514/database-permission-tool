@@ -96,7 +96,7 @@ def new(conf):
     for pc in conf.get('policies', []):
         subject = pc['subject']
         target = pc['target']
-        permissions = pc['permissions']
+        # permissions = pc['permissions']
 
         policy = Policy(
             _id=pc['id'],
@@ -119,8 +119,10 @@ def new(conf):
         else:
             raise NotImplementedError
 
+        '''
         for perm in permissions:
             Graph.add_edge(policy, perm, **{'type': TYPE.PERMISSION})
+        '''
 
     return Permissions(graph=Graph)
 
