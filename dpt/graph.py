@@ -89,12 +89,10 @@ def new(conf):
         roles[rl.id()] = rl
         Graph.add_node(rl, **rl.attrs())
 
-        for member in role.get('members', []):
-            if member['type'] == TYPE.USER:
-                u = users[member['id']]
-                Graph.add_edge(u, rl, **u.attrs())
-            else:
-                raise NotImplementedError
+        for user in role.get('users', []):
+            u = users[user['id']]
+            Graph.add_edge(u, rl, **u.attrs())
+
     for pc in conf.get('policies', []):
         subject = pc['subject']
         target = pc['target']

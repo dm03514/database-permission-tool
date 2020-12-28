@@ -4,7 +4,7 @@ import logging
 import yaml
 import networkx as nx
 
-from dpt.sources import postgres
+from dpt.sources import postgres, redshift
 from dpt import graph
 
 from dpt.logger import init
@@ -21,12 +21,12 @@ def main():
     parser.add_argument(
         'operation',
         type=str,
-        choices=('apply', 'plan', 'graph'),
+        choices=('apply', 'plan', 'graph', 'export'),
         help='dpt operation to perform')
     parser.add_argument(
         '--db',
         type=str,
-        choices=('postgres',),
+        choices=('postgres', 'redshift'),
         help='target database system')
     parser.add_argument(
         '--connection-string',
@@ -37,6 +37,15 @@ def main():
         type=str,
         help='config file')
     cli_args = parser.parse_args()
+
+    if cli_args.operation == 'export':
+        raise NotImplementedError
+        '''
+        if cli_args.db == 'redshift':
+            redshift.export(cli_args.connection_string)
+        else:
+        return
+        '''
 
     # load the config file
     conf = None
@@ -65,6 +74,8 @@ def main():
             print('\n\n'.join(stmnt.sql for stmnt in postgres_perms.plan()))
         elif cli_args.operation == 'apply':
             postgres_perms.apply()
+        else:
+            raise NotImplementedError
 
 
 if __name__ == '__main__':
