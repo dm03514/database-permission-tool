@@ -7,14 +7,12 @@ schemas:
 
 roles:
   - id: admin
-    members:
+    users:
       - id: user_admin
-        type: USER
 
   - id: readonly
-    members:
+    users:
       - id: user_reg
-        type: USER
 
 policies:
   - id: admin

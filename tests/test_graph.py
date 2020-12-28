@@ -19,10 +19,9 @@ class GraphTestCase(unittest.TestCase):
             'roles': [
                 {
                     'id': 'new_group',
-                    'members': [
+                    'users': [
                         {
                             'id': 'user_id_1',
-                            'type': 'USER'
                         }
                     ]
                 }
