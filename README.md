@@ -2,7 +2,7 @@
 
 Database permission tool (dpt) allows you to store your database roles permissions as configuration. 
 
-# Quickstart - Configuring a Role
+# 5 Minute Quickstart - Configuring a Role
 
 `dpt` models your entire database RBAC permission scheme as configuration. It requires a configuration file and the `database-permission-tool` CLI.
 
@@ -69,9 +69,6 @@ WARNING: psql major version 12, server major version 13.
          Some psql features might not work.
 Type "help" for help.
 
-test=# select * from pg_roles where rol
-rolbypassrls    rolconfig       rolcreatedb     rolinherit      rolpassword     rolsuper
-rolcanlogin     rolconnlimit    rolcreaterole   rolname         rolreplication  rolvaliduntil
 test=# select * from pg_roles where rolname = 'first_role';
   rolname   | rolsuper | rolinherit | rolcreaterole | rolcreatedb | rolcanlogin | rolreplication | rolconnlimit | rolpassword | rolvaliduntil | rolbypassrls | rolconfig |  oid
 ------------+----------+------------+---------------+-------------+-------------+----------------+--------------+-------------+---------------+--------------+-----------+-------
