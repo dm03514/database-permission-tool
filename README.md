@@ -4,20 +4,29 @@ Database permission tool (dpt) allows you to store your database roles permissio
 
 # Quickstart - Configuring a Role
 
-- Clone the repo
+- Clone the repo:
 
 ```
 $ git@github.com:dm03514/database-permission-tool.git
 ```
 
-- Install the requirements 
+- Install python requirements:
 
 ```
 $ pip install -r requirements.txt
 ```
 
-- Start Postgres
+- Start Postgres:
 
 ```
 $ docker-compose up -d
+```
+
+- Create a file to contain your permissions. And define your first role:
+
+```
+# permissions.yml
+
+roles:
+  - id: first_role
 ```
