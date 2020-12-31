@@ -1,0 +1,62 @@
+description: |
+  https://discourse.getdbt.com/t/the-exact-privileges-we-grant-outside-of-dbt/439
+
+databases:
+  - id: raw
+  - id: analytics
+
+warehouses:
+  - id: loading
+  - id: transforming
+  - id: reporting
+
+users:
+  - id: stitch
+  - id: claire
+  - id: dbt_cloud
+  - id: looker
+
+roles:
+  - id: loader
+    users:
+      - id: stitch
+
+  - id: transformer
+    users:
+      - id: dbt_cloud_user
+      - id: claire
+
+  - id: reporter
+    users:
+      - id: looker_user
+
+policies:
+  - id: transformer_raw_perms
+    subject:
+      id: transformer
+      type: ROLE
+    target:
+      id: raw
+      type: DATABASE
+    permissions:
+      usage: True
+      usage_schemas: True
+      usage_future_schemas: True
+      select_all_tables: True
+      select_future_all_tables: True
+
+  - id: reporter_analytics_perms
+    subject:
+      id: reporter
+      type: ROLE
+    target:
+      id: analytics
+      type: DATABASE
+    permissions:
+      usage: True
+      usage_schemas: True
+      usage_future_schemas: True
+      select_all_views: True
+      select_all_tables: True
+      select_future_all_tables: True
+      select_future_all_views: True
